@@ -1,3 +1,113 @@
+<?php
+session_start();
+include("functions.php");
+// check_session_id();
+
+// DB接続情報
+$pdo = connect_to_db();
+
+// SESSION 変数  set
+$user_id = (int)$_SESSION["user_id"];
+// $page = (int)$_SESSION["page"];
+$page = 1;
+$card_image_path = $_SESSION["card_image_path"];
+$error_msg = $_SESSION["error_msg"];
+
+// 一応select
+$sql =
+  'SELECT * FROM mypage_table
+    WHERE  (user_id = :user_id  and  page = :page)';
+
+// SQL準備 & 実行
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->bindValue(':page', $page, PDO::PARAM_STR);
+$status = $stmt->execute();
+
+// データ登録処理後
+if ($status == false) {
+  // SQL実行に失敗した場合はここでエラーを出力し，以降の処理を中止する
+  $error = $stmt->errorInfo();
+  echo json_encode(["error_msg" => "{$error[2]}"]);
+  exit();
+}
+
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$name         = "";
+$name_yomi    = "";
+$circle       = "";
+$circle_yomi  = "";
+$genre        = "";
+$genre_yomi   = "";
+$main_chara   = "";
+$couple       = "";
+$NG_type      = "";
+$hosoku       = "";
+$twitter_id   = "";
+$web_url      = "";
+$Pixiv_id     = "";
+$FanBox       = "";
+$next_eve     = "";
+$next_eve_url = "";
+$image        = "";
+
+// 編集済みデータがある場合、カラムにデータを表示する
+foreach ($result as $record) {
+  $name         .= "{$record["name"]}";
+  $name_yomi    .= "{$record["name_yomi"]}";
+  $circle       .= "{$record["circle"]}";
+  $circle_yomi  .= "{$record["circle_yomi"]}";
+  $genre        .= "{$record["genre"]}";
+  $genre_yomi   .= "{$record["genre_yomi"]}";
+  $main_chara   .= "{$record["main_chara"]}";
+  $couple       .= "{$record["couple"]}";
+  $NG_type      .= "{$record["NG_type"]}";
+  $hosoku       .= "{$record["hosoku"]}";
+  $twitter_id   .= "{$record["twitter_id"]}";
+  $web_url      .= "{$record["web_url"]}";
+  $Pixiv_id     .= "{$record["Pixiv_id"]}";
+  $FanBox       .= "{$record["FanBox"]}";
+  $next_eve     .= "{$record["next_eve"]}";
+  $next_eve_url .= "{$record["next_eve_url"]}";
+  $image        .= "{$record["image"]}";
+}
+unset($record);
+
+$card_image_show = "image/2473170.jpg";
+// mypage_table にレコードがない場合、card_image にデフォルトの画像を置く
+if (!$result) {
+  if (!$card_image_path) {
+    $card_image_show = '<img class="my_card_1" src="image/2473170.jpg" alt="my_card_1" width="300px"><br>';
+    // var_dump("image0");
+  } else {
+    $card_image_show = '<img class="my_card_1" src="' . $card_image_path . '" alt="my_card_1" width="300px"><br>'; // imgタグを設定
+    // var_dump("image4");
+  }
+} else {
+  // 画像アップロードしていない場合も、card_image にデフォルトの画像を置く
+  // mypage_table に画像がある場合は、mypage_table の image
+  if (!$card_image_path) {
+    if (!$image) {
+      $card_image_show = '<img class="my_card_1" src="image/2473170.jpg" alt="my_card_1" width="300px"><br>';
+      // var_dump("image1");
+    } else {
+      $card_image_show = '<img class="my_card_1" src="' . $image . '" alt="my_card_1" width="300px"><br>'; // imgタグを設定
+      // var_dump("image2");
+    }
+  } else {
+    // 画像アップロードしてる場合、card_image にアップロード画面を置く
+    // $card_image_show .= '<img class="my_card_1" src="' . $card_image_path . 'alt="my_card_1" width="300px"><br>'; // imgタグを設定
+    $card_image_show = '<img class="my_card_1" src="' . $card_image_path . '" alt="my_card_1" width="300px"><br>'; // imgタグを設定
+    // var_dump("image3");
+  }
+}
+// var_dump($card_image_path);
+// var_dump($card_image_show);
+// exit();
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -37,25 +147,17 @@
         <div class="myCard_left">
           <!-- <p>左側</p> -->
           <div class="card_edit">
-            <img class="my_card_1" src="image/2473170.jpg" alt="my_card_1" width="300px"><br>
-            <!-- <form action="file_upload.php" method="POST" enctype="multipart/form-data">
+            <?= $card_image_show ?>
+            <!-- <img class="my_card_1" src="image/2473170.jpg" alt="my_card_1" width="300px"><br> -->
+            <form action="card_upload.php" method="POST" enctype="multipart/form-data">
               <div>
                 <input type="file" name="upfile" accept="image/*" capture="camera">
               </div>
-              <div>
-                <button>submit</button>
-              </div>
-            </form> -->
-            <form class="file_upload" action="card_upload.php" method="POST" enctype="multipart/form-data">
-              <br>
-              <div>
-                <input type="file" name="upfile" accept="image/*" capture="camera">
-              </div>
+              <?= $error_msg ?>
               <div>
                 <button class="file_button">画像をアップロード</button>
               </div>
             </form>
-            <!-- <p>名刺の画像をupする</p> -->
             <a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
           </div>
         </div>
@@ -87,7 +189,7 @@
           <div id="mypage_form" class="form_1_table wrapper">
             <form action="my_page_edit_act.php" method="POST">
               <div class="newdata_button">
-                <p>登録を行います。</p>
+                <!-- <p>登録を行います。</p> -->
                 <!-- <a class="edit_button" href="my_page_edit_act.php">保存する</a> -->
                 <!-- <button class="edit_button"><input type="submit" name="edit_data" />保存する</button> -->
                 <button class="edit_button">保存する</button>
@@ -95,67 +197,67 @@
               <div>
                 <label for="name">Name（※必須）</label>
                 <!-- <input type="text" id="name" name="name"> -->
-                <input type="text" name="name">
+                <input type="text" name="name" value="<?php echo $name ?>" required>
               </div>
               <div>
                 <label for="name_yomi">よみがな</label>
-                <input type="text" id="name_yomi" name="name_yomi">
+                <input type="text" name="name_yomi" value=" <?php echo $name_yomi ?>">
               </div>
               <div>
                 <label for="circle">サークル名</label>
-                <input type="text" id="circle" name="circle">
+                <input type="text" name="circle" value="<?php echo $circle ?>">
               </div>
               <div>
-                <label for="circle_yomi">サークル名よみがな</label>
-                <input type="text" id="circle_yomi" name="circle_yomi">
+                <label for=" circle_yomi">サークル名よみがな</label>
+                <input type="text" name="circle_yomi" value="<?php echo $circle_yomi ?>">
               </div>
               <div>
                 <label for="genre">作品名（ジャンル）</label>
-                <input type="text" id="genre" name="genre">
+                <input type="text" name="genre" value="<?php echo $genre ?>">
               </div>
               <div>
                 <label for="genre_yomi">作品名（ジャンル）よみがな</label>
-                <input type="text" id="genre_yomi" name="genre_yomi">
+                <input type="text" name="genre_yomi" value="<?php echo $genre_yomi ?>">
               </div>
               <div>
                 <label for="main_chara">中心キャラ ※1</label>
-                <input type="text" id="main_chara" name="main_chara">
+                <input type="text" name="main_chara" value="<?php echo $main_chara ?>">
               </div>
               <div>
                 <label for="couple">カップリング ※2</label>
-                <input type="text" id="couple" name="couple">
+                <input type="text" name="couple" value="<?php echo $couple ?>">
               </div>
               <div>
                 <label for="NG_type">地雷</label>
-                <input type="text" id="NG_type" name="NG_type">
+                <input type="text" name="NG_type" value="<?php echo $NG_type ?>">
               </div>
               <div>
                 <label for="hosoku">補足説明</label>
-                <input type="text" id="hosoku" name="hosoku">
+                <input type="text" name="hosoku" value="<?php echo $hosoku ?>">
               </div>
               <div>
                 <label for="twitter_id">Twitter ID</label>
-                <input type="text" id="twitter_id" name="twitter_id">
+                <input type="text" name="twitter_id" value="<?php echo $twitter_id ?>">
               </div>
               <div>
                 <label for="web_url">WEB URL（店舗など）</label>
-                <input type="text" id="web_url" name="web_url">
+                <input type="text" name="web_url" value="<?php echo $web_url ?>">
               </div>
               <div>
                 <label for="Pixiv_id">Pixiv ID</label>
-                <input type="text" id="Pixiv_id" name="Pixiv_id">
+                <input type="text" name="Pixiv_id" value="<?php echo $Pixiv_id ?>">
               </div>
               <div>
                 <label for="FanBox">FanBox</label>
-                <input type="text" id="FanBox" name="FanBox">
+                <input type="text" name="FanBox" value="<?php echo $FanBox ?>">
               </div>
               <div>
                 <label for="next_eve">次の参加予定 ※3</label>
-                <input type="text" id="next_eve" name="next_eve">
+                <input type="text" name="next_eve" value="<?php echo $next_eve ?>">
               </div>
               <div>
-                <label for="next_eve">次の参加予定 ※3</label>
-                <input type="text" id="next_eve" name="next_eve">
+                <label for="next_eve_url">次の参加予定のURL</label>
+                <input type="text" name="next_eve_url" value="<?php echo $next_eve_url ?>">
               </div>
             </form>
           </div>

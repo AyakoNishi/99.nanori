@@ -1,17 +1,9 @@
 <?php
-session_start();
-include('functions.php');
+// ライブラリ読み込み
+require_once "phpqrcode/qrlib.php";
 
-// var_dump($_SESSION["user_id"]);
-$error_msg = $_SESSION["error_msg"];
-
-// if (!$_SESSION["user_id"]) {
-//     header("Location:index.html");
-//     exit();
-// } else {
-//     header("Location:guest_get_confirm.php");
-//     exit();
-// }
+// URLを定数に設定
+$url = 'qr_create.php?data=' . $_GET['data'];
 ?>
 
 <!DOCTYPE html>
@@ -39,29 +31,26 @@ $error_msg = $_SESSION["error_msg"];
                 <li class="nav_box"><a href="my_page.php">マイページ</a></li>
                 <li class="nav_box"><a href="my_page_edit.php">名刺を編集する</a></li>
                 <li class="nav_box"><a href="qr_index.php">QRコードを表示する</a></li>
-                <!-- <li class="nav_box"><a href="guest_get.php">名刺を取得する</a></li> -->
+                <li class="nav_box"><a href="guest_get.php">名刺を取得する</a></li>
                 <li class="nav_box"><a href="guest_page.php">取得名刺一覧</a></li>
                 <li class="nav_box"><a href="logout.php">LOGOUT</a></li>
             </ul>
         </nav>
     </header>
-    <!-- <p>QRテスト</p> -->
-    <div class="qr_index">
-        <p>スマートフォンのカメラで、取得したい名刺を読み込んで下さい</p>
-        <!-- <p>QRコードが読み取れない場合、コードを入力してください。</p><br>
-        <form method="GET" action="guest_get_confirm.php">
-            <input type="text" name="guest_id" style="border: solid 1px;">
-            <!-- <input type="submit" value="名刺を取得する">-->
-        <button class="qr_button"><input type="submit" value="名刺を取得する"></button>
-        </form>-->
-        <div class="error_message">
-            <?= $error_msg ?>
-        </div>
+    <div class="show-qr">
+        <img src="<?php echo $url ?>" style="border: solid 1px; width: 500px;" />
+        <!-- <img src="mycard/qr.png" /> -->
+        <br>
+        <a href="qr_index.html">QRコード入力へ戻る</a><br>
+        <a href="my_page.php">マイページへ戻る</a><br>
+
     </div>
+
     <!-- <footer>フッター</footer> -->
     <footer>
         <p>copyrights 2021 Na-nori All RIghts Reserved.</p>
     </footer>
+
 </body>
 
 </html>

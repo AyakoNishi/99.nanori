@@ -15,9 +15,12 @@ $pdo = connect_to_db();
 // ユーザーチェック
 $is_admin = $_SESSION["is_admin"];
 $user_id = (int)$_SESSION["user_id"];
-$card_image_path = $_SESSION["card_image_path"];
-$card_image_show = "";
 $mypage_image = "";
+
+if (isset($_GET['key'])) {
+  $guest_id = (int)$_GET['key'];
+}
+
 
 // if ($is_admin != 1) {
 //   echo "<p>管理者以外の閲覧は出来ません。</p>";
@@ -26,11 +29,11 @@ $mypage_image = "";
 
 //SQL Fact-table
 $sql = 'SELECT * FROM mypage_table
-        WHERE (user_id = :user_id) 
+        WHERE (user_id = :guest_id) 
         ORDER BY page';
 
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->bindValue(':guest_id', $guest_id, PDO::PARAM_STR);
 $status = $stmt->execute(); // SQLを実行
 
 if ($status == false) {
@@ -179,7 +182,7 @@ if ($status == false) {
       $output .= "</tr>";
 
       $mypage_image .= "{$record["image"]}"; // imgタグを設定
-      $card_image_show .= '<img class="my_card_1" src="' . $mypage_image . '" alt="my_card_1" width="300px"><br>';
+      $card_image_show = '<img class="my_card_1" src="' . $mypage_image . '" alt="my_card_1" width="300px"><br>';
     }
     unset($record);
   }
@@ -193,7 +196,6 @@ if ($status == false) {
     //     $card_image_show = '<img class="my_card_1" src="' . $card_image_path . '" alt="my_card_1" width="300px"><br>'; // imgタグを設定
     //   }
   }
-  $_SESSION["card_image_path"] = "";
 }
 
 ?>
@@ -224,7 +226,7 @@ if ($status == false) {
           <li class="nav_box"><a href="my_page.php">マイページ</a></li>
           <li class="nav_box"><a href="my_page_edit.php">名刺を編集する</a></li>
           <li class="nav_box"><a href="qr_index.php">QRコードを表示する</a></li>
-          <li class="nav_box"><a href="guest_get.php">名刺を取得する</a></li>
+          <!-- <li class="nav_box"><a href="guest_get.php">名刺を取得する</a></li> -->
           <li class="nav_box"><a href="guest_page.php">取得名刺一覧</a></li>
           <li class="nav_box"><a href="logout.php">LOGOUT</a></li>
         </ul>
@@ -241,60 +243,21 @@ if ($status == false) {
             <?= $card_image_show ?>
             <br>
           </div>
-          <a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
+          <!-- <a href="https://twitter.com"><i class="fab fa-twitter"></i></a> -->
+          <button class="guest_button"><a href="guest_page.php">取得名刺一覧に戻る</a></button>
         </div>
         <!-- 右側  リスト -->
         <div class="myCard_right">
           <!-- <p>右側</p> -->
-          <!-- <table class="test">
-            <tr>
-              <th>ラジオ</th>
-              <td>
-                <input type="radio" name="use" value="1" id="radio1" checked /><label for="radio1">名刺１</label>
-                <input type="radio" name="use" value="2" id="radio2" /><label for="radio2">名刺２</label>
-                <input type="radio" name="use" value="3" id="radio3" /><label for="radio3">名刺３</label>
-              </td>
-            </tr>
-            <tr id="tr1">
-              <th>機能</th>
-              <td>1111111111</td>
-            </tr>
-            <tr id="tr2">
-              <th>機能</th>
-              <td>2222222222</td>
-            </tr>
-            <tr id="tr3">
-              <th>機能</th>
-              <td>3333333333</td>
-            </tr>
-          </table> -->
-          <div class="list_1_table wrapper">
+          <div class="guest_page_table wrapper">
             <table>
               <?= $output ?>
             </table>
           </div>
         </div>
-
-      </div>
     </main>
   </div><!-- /#home-->
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script>
-    $(function() {
-      $('input[type=radio]').change(function() {
-        $('#tr1,#tr2,#tr3').removeClass('invisible');
-
-        if ($("input:radio[name='use']:checked").val() == "1") {
-          $('#tr2,#tr3').addClass('invisible');
-        } else if ($("input:radio[name='use']:checked").val() == "2") {
-          $('#tr1,#tr3').addClass('invisible');
-        } else if ($("input:radio[name='use']:checked").val() == "3") {
-          $('#tr1,#tr2').addClass('invisible');
-        }
-      }).trigger('change'); //←(1)
-    });
-  </script>
 
   <!-- <footer>フッター</footer> -->
   <footer>

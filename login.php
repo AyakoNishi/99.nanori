@@ -29,7 +29,7 @@
   <form action="login_act.php" method="POST">
     <div class="login_page">
       <h2>同人専用オンライン名刺『Na-nori』ログイン画面</h2>
-      <div>
+      <div class="login_box">
         ログインID: <input type="text" name="user_nm" style="border: solid 1px;">
       </div>
       <div>

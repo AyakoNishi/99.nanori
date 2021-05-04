@@ -1,9 +1,18 @@
 <?php
+session_start();
+include('functions.php');
+
+// SESSION 変数  set
+$user_id = (int)$_SESSION["user_id"];
+$page = 1;
+
 // ライブラリ読み込み
 require_once "phpqrcode/qrlib.php";
 
 // URLを定数に設定
-$url = 'qr_create.php?data=' . $_GET['data'];
+$url = 'qr_create.php?data=' . $user_id . '&page=1';
+// $url = 'qr_create.php?data=' . $_GET['data'];
+// $url = 'https://nanori-beta-ver1.lolipop.io/qr_created.php?data=' . $_GET['data'];
 ?>
 
 <!DOCTYPE html>
@@ -41,8 +50,8 @@ $url = 'qr_create.php?data=' . $_GET['data'];
         <img src="<?php echo $url ?>" style="border: solid 1px; width: 500px;" />
         <!-- <img src="mycard/qr.png" /> -->
         <br>
-        <a href="qr_index.html">QRコード入力へ戻る</a><br>
-        <a href="my_page.php">マイページへ戻る</a><br>
+        <!-- <a href="qr_index.php">QRコード入力へ戻る</a><br> -->
+        <button class="qr_button"><a href="my_page.php">マイページへ戻る</a></button><br>
 
     </div>
 

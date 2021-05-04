@@ -36,26 +36,46 @@ if ($status == false) {
   exit();
 } else {
 
-  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $guest_page_image = "";
   $guest_page_list = "";
-  foreach ($result as $record) {
-    $guest_page_list .= "<tr>";
-    $guest_page_list .= '<td><img src="image/3243048_m.jpg" alt="image" style="width : 200px"></td>';
-    $guest_page_list .= "</tr>";
-    $guest_page_list .= "<tr>";
-    $guest_page_list .= "<th>名前</th>";
-    $guest_page_list .= "<td>{$record["name"]}</td>";
-    $guest_page_list .= "</tr>";
-    $guest_page_list .= "<tr>";
-    $guest_page_list .= "<th>サークル名</th>";
-    $guest_page_list .= "<td>{$record["circle"]}</td>";
-    $guest_page_list .= "</tr>";
+  $no_guest = "";
 
-    // var_dump($guest_page_list);
-    // exit();
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  if (!$result) {
+    $no_guest = "<p>取得した名刺はありません。</p>";
+  } else {
+    foreach ($result as $record) {
+      $guest_page_list .= "<tr>";
+      $guest_page_list .= "<td>";
+      $guest_page_list .= '<img class="guest_card_1" src="' . $record["image"] . '" alt="guest_card_1" width="300px"><br>';
+      $guest_page_list .= "</td>";
+      $guest_page_list .= "<th>名前</th>";
+      $guest_page_list .= "<td>{$record["name"]}</td>";
+      $guest_page_list .= "<th>サークル名</th>";
+      $guest_page_list .= "<td>{$record["circle"]}</td>";
+      $guest_page_list .= "</tr>";
+      $guest_page_list .= "<tr>";
+      $guest_page_list .= "<td>";
+      $guest_page_list .= '<button class="guest_button"><a href="guest_page_show.php?key=' . $record["user_id"] . '">詳細を表示</a></button>';
+      $guest_page_list .= "</td>";
+      $guest_page_list .= "</tr>";
+      // $guest_page_list .= '<td><img src="image/3243048_m.jpg" alt="image" style="width : 200px"></td>';
+      // $guest_page_list = "{$record["image"]}"; // imgタグを設定
+      // $guest_page_list .= "<tr>";
+      // $guest_page_list .= "<th>名前</th>";
+      // $guest_page_list .= "<td>{$record["name"]}</td>";
+      // $guest_page_list .= "</tr>";
+      // $guest_page_list .= "<tr>";
+      // $guest_page_list .= "<th>サークル名</th>";
+      // $guest_page_list .= "<td>{$record["name"]}</td>";
+      // $guest_page_list .= "<td>{$record["circle"]}</td>";
+      // $guest_page_list .= "</tr>";
+
+      // var_dump($guest_page_list);
+      // exit();
+    }
+    unset($record);
   }
-  unset($record);
 }
 
 ?>
@@ -96,18 +116,26 @@ if ($status == false) {
     <main>
       <div class="guest_contents wrapper">
         <div class="guest_page_box  wrapper">
-          <table>
-            <thead>
-              <tr>
-                <h2>取得した名刺一覧</h2>
-              </tr>
-            </thead>
-            <tbody>
-              <div class="guest_image">
-                <?= $guest_page_list ?>
-              </div>
-            </tbody>
-          </table>
+          <h2>取得した名刺一覧</h2>
+          <?= $no_guest ?>
+
+          <div class="guest_table">
+            <table>
+              <?= $guest_page_list ?>
+            </table>
+          </div>
+
+          <!-- <div class="guest_page_list">
+            <div class="guest_page_image">
+              <?= $guest_pahge_image ?>
+            </div>
+            <div class="guest_page_name_box">
+              <table>
+                <?= $guest_page_name ?>
+                <?= $guest_page_circle ?>
+              </table>
+            </div>
+          </div> -->
         </div>
     </main>
   </div><!-- /#home-->

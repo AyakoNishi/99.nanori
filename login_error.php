@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+include('functions.php');
+// check_session_id();
+
+$error_msg = $_SESSION["error_msg"];
+
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -15,13 +25,13 @@
 
 <body>
   <header class="page-header wrapper">
-    <a href="index.php"><img src="image/header_logo.png" alt="名乗りロゴ"></a>
+    <a href="index.html"><img src="image/nanori_logo.png" alt="名乗りロゴ"></a>
     <nav>
       <ul class="navi">
-        <li class="nav_box"><a href="#show">名刺を表示する</a></li>
+        <!-- <li class="nav_box"><a href="#show">名刺を表示する</a></li>
         <li class="nav_box"><a href="#contact">名刺を取得する</a></li>
-        <li class="nav_box"><a href="#daatbase">名刺を管理する</a></li>
-        <li class="nav_box"><a href="login.php">LOGIN</a></li>
+        <li class="nav_box"><a href="#daatbase">名刺を管理する</a></li> -->
+        <!-- <li class="nav_box"><a href="login.php">LOGIN</a></li> -->
       </ul>
     </nav>
   </header>
@@ -29,6 +39,7 @@
   <form action="login_act.php" method="POST">
     <div class="login_page">
       <h2>同人専用オンライン名刺『Na-nori』ログイン画面</h2>
+      <!-- <p>ユーザーID またはパスワードに誤りがあります。新規の方はご登録からお願いします。</p> -->
       <div>
         ログインID: <input type="text" name="user_nm" style="border: solid 1px;">
       </div>
@@ -37,8 +48,12 @@
       </div>
       <div class="login_button">
         <!-- <button class="top_button_n"><a href="new_account_act.php">新規登録</a></button> -->
-        <button class="top_button_n">新規登録</button>
-        <button class="top_button_l">ログイン</button>
+        <!-- <button class="top_button_l">ログイン</button> -->
+        <button class="top_button_n"><input type="submit" name="submit1" value="新規登録" /></button>
+        <button class="top_button_l"><input type="submit" name="submit2" value="ログイン" /></button>
+      </div>
+      <div class="error_message">
+        <?= $error_msg ?>
       </div>
     </div>
   </form>

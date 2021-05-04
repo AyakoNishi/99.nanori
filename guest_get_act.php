@@ -6,7 +6,7 @@ check_session_id();
 $pdo = connect_to_db();
 // exit();
 $user_id = (int)$_SESSION["user_id"];
-$user_page = (int)$_SESSION["user_page"];
+$user_page = 1;
 $guest_id = (int)$_SESSION["guest_id"];
 $guest_page = (int)$_SESSION["guest_page"];
 
@@ -41,7 +41,7 @@ $status = $stmt->execute();
 // }
 if ($status == false) {
   // SQL実行に失敗した場合はここでエラーを出力し，以降の処理を中止する
-  header("Location:guest_get.php");
+  header("Location:guest_page.php");
   exit();
 } else {
   // var_dump('guest_get_act3');

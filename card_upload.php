@@ -29,42 +29,67 @@ if (!isset($_FILES['upfile']) && $_FILES['upfile']['error'] != 0) {
 
   $extension = pathinfo($uploaded_file_name, PATHINFO_EXTENSION);
   // $unique_name = date('YmdHis') . md5(session_id()) . "." . $extension;
-  $unique_name = $user_id . $page . $uploaded_file_name . "." . $extension;
+  // $unique_name = $user_id . "_" . $page . "_" . $uploaded_file_name . "." . $extension;
+  $unique_name = $user_id . "_" . $page . "_" . $uploaded_file_name;
   $filename_to_save = $directory_path . $unique_name;
   // var_dump($filename_to_save);
   // exit();
 
   $img = '';
+  $error_msg = '';
   if (!is_uploaded_file($temp_path)) {
-    exit('Error:画像がありません'); // tmpフォルダにデータがない
+    // exit('Error:画像がありません'); // tmpフォルダにデータがない
+    $error_msg = '<p>Error:画像がありません </p>';
   } else { // ↓ここでtmpファイルを移動する
     if (!move_uploaded_file($temp_path, $filename_to_save)) {
-      exit('Error:アップロードできませんでした'); // 画像の保存に失敗
+      // exit('Error:アップロードできませんでした'); // 画像の保存に失敗
+      $error_msg = '<p>Error:アップロードできませんでした </p>';
     } else {
       chmod($filename_to_save, 0644); // 権限の変更
-      $img = '<img src="' . $filename_to_save . '" >'; // imgタグを設定
+      $img = '<img class="my_card_1" src="' . $filename_to_save . '" alt="my_card_1" width="300px"><br>';
+      // $img = '<img src="' . $filename_to_save . '" >'; // imgタグを設定
+      $_SESSION["card_image_path"] = $filename_to_save;
     }
   }
+  $_SESSION["error_msg"] = $error_msg;
+  $_SESSION["img"] = $img;
 
-  // upload したファイルを、mypage_table に入れる
-  $sql =
-    'UPDATE mypage_table set image = :filename_to_save
-    WHERE  (user_id = :user_id  and  page = :page)';
+  // var_dump($error_msg);
+  // var_dump($img);
+  // var_dump($filename_to_save);
+  // exit();
 
-  // SQL準備&実行
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
-  $stmt->bindValue(':page', $page, PDO::PARAM_STR);
-  $stmt->bindValue(':image', $filename_to_save, PDO::PARAM_STR);
-  $status = $stmt->execute();
+  header("Location:my_page_edit.php");
+  exit();
 
-  // データ登録処理後
-  if ($status == false) {
-    // SQL実行に失敗した場合はここでエラーを出力し，以降の処理を中止する
-    $error = $stmt->errorInfo();
-    echo json_encode(["error_msg" => "{$error[2]}"]);
-    exit();
-  }
+
+  // 一応select
+  // $sql =
+  //   'UPDATE mypage_table set image = :filename_to_save
+  //   WHERE  (user_id = :user_id  and  page = :page)';
+
+
+
+
+  // // upload したファイルを、mypage_table に入れる
+  // $sql =
+  //   'UPDATE mypage_table set image = :filename_to_save
+  //   WHERE  (user_id = :user_id  and  page = :page)';
+
+  // // SQL準備&実行
+  // $stmt = $pdo->prepare($sql);
+  // $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
+  // $stmt->bindValue(':page', $page, PDO::PARAM_STR);
+  // $stmt->bindValue(':image', $filename_to_save, PDO::PARAM_STR);
+  // $status = $stmt->execute();
+
+  // // データ登録処理後
+  // if ($status == false) {
+  //   // SQL実行に失敗した場合はここでエラーを出力し，以降の処理を中止する
+  //   $error = $stmt->errorInfo();
+  //   echo json_encode(["error_msg" => "{$error[2]}"]);
+  //   exit();
+  // }
   // header("Location:my_page_.php");
   // exit();
 

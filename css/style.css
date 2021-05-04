@@ -84,6 +84,8 @@ main{
   height: 100%;
   object-fit: cover;
 }
+
+/*  ボタン エリア */
 .top_button_n{
 	background: #e2eba3;
 	border-radius: 5px;
@@ -113,6 +115,18 @@ main{
 	padding: 12px 26px;
   margin-top: 10px;
 }
+.qr_button{
+	background: #e2eba3;
+	border-radius: 5px;
+	padding: 12px 26px;
+  margin-top: 10px;
+}
+.guest_button{
+	background: #e2eba3;
+	border-radius: 5px;
+	padding: 12px 26px;
+  margin-top: 10px;
+}
 
 /*  ログインページ */
 .login_top{
@@ -122,6 +136,9 @@ main{
 }
 .login_button{
 	padding-top: 30px;
+}
+.login_box{
+  padding-top: 20px;
 }
 
 
@@ -196,6 +213,7 @@ h2{
 	background-color: pink;
 } */
 
+/*  マイページ 装飾 エリア */
 .list_1_table table{
   width: 100%;
   border-collapse: collapse;
@@ -241,17 +259,14 @@ h2{
   padding: 10px 0;
 }
 
-
+/*  入力フォーム 装飾 エリア */
 .form_1_table form{
   width: 100%;
   border-collapse: collapse;
-	
 }
-
 .form_1_table label:last-child{
   border-bottom: none;
 }
-
 .form_1_table label{
 	display: flex;
 	flex-direction: column;
@@ -264,7 +279,6 @@ h2{
   /* padding: 10px 0; */
   padding: 2px 5px 2px 5px;
 }
-
 .form_1_table label:after{
   display: block;
   content: "";
@@ -278,7 +292,6 @@ h2{
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
 }
-
 .form_1_table input{
   /* text-align: left; */
   width: 70%;
@@ -297,9 +310,16 @@ h2{
   padding-top: 50px;
 }
 
+/* guest_get_page */
+.guest_get_confirm{
+  display: flex;
+  justify-content: center;
+  padding: 50px 0 20px 0;
+
+}
+
 /* guest_page */
 .guest_contents{
-  width: 70%;
   display: flex;
   justify-content: center;
 }
@@ -311,6 +331,63 @@ h2{
   display: flex;
   justify-content: center;
 }
+.guest_table{
+  background-color: #eee;
+  padding: 10px;
+  margin: 20px;
+  
+}
+.guest_table table td{
+  margin: 10px;
+}
+
+/*  ゲストページ 装飾 エリア */
+.guest_page_table table{
+  width: 100%;
+  border-collapse: collapse;
+}
+.guest_page_table table tr{
+  border-bottom: solid 2px white;
+}
+.guest_page_table table tr:last-child{
+  border-bottom: none;
+}
+.guest_page_table table th{
+  position: relative;
+  text-align: left;
+  width: 30%;
+  background-color: #FFBF11;
+  color: white;
+  text-align: center;
+  /* padding: 10px 0; */
+  padding: 2px 5px 2px 5px;
+}
+.guest_page_table table th:after{
+  display: block;
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  top:calc(50% - 10px);
+  right:-10px;
+  border-left: 10px solid #FFBF11;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+.guest_page_table table td{
+  text-align: left;
+  width: 70%;
+  text-align: center;
+  background-color: #eee;
+  padding: 10px 0;
+}
+
+
+.error_message{
+  color: red;
+  margin: 10px 0 10px 0;
+}
+
 
 /* FOOTER */
 footer{
